@@ -1,105 +1,175 @@
-# zardkat 🐱
+# CustomCircuit.circom Readme
 
-A [hardhat-circom](https://github.com/projectsophon/hardhat-circom) template to generate zero-knowledge circuits, proofs, and solidity verifiers
+## Description
 
-## Quick Start
-Compile the Multiplier2() circuit and verify it against a smart contract verifier
+This repository contains the code for a custom circuit implemented in the Circom language. The `CustomCircuit.circom` code defines a custom logic circuit composed of AND, OR, and NOT gates. This readme provides information on how to understand, use, and run the circuit.
+
+## Prerequisites
+
+Before using the `CustomCircuit.circom` code, make sure you have the following installed on your system:
+
+1. **Node.js**: Circom requires Node.js to be installed as it is used to run the circom compiler. You can download Node.js from the official website: https://nodejs.org/
+
+2. **Circom**: To compile the Circom code, you need the Circom compiler installed globally. You can install it using Node.js package manager (npm) with the following command:
+
+   ```bash
+   npm install -g circom
+   ```
+
+## Circuit Description
+
+The `CustomCircuit` template represents a custom logic circuit constructed using the AND, OR, and NOT gates.
+
+### Template: `AND`
+
+- Inputs:
+  - `a`: Input signal of the AND gate.
+  - `b`: Input signal of the AND gate.
+- Outputs:
+  - `out`: Output signal of the AND gate, which is the result of `a` AND `b`.
+
+### Template: `OR`
+
+- Inputs:
+  - `a`: Input signal of the OR gate.
+  - `b`: Input signal of the OR gate.
+- Outputs:
+  - `out`: Output signal of the OR gate, which is the result of `a` OR `b`.
+
+### Template: `NOT`
+
+- Inputs:
+  - `in`: Input signal of the NOT gate.
+- Outputs:
+  - `out`: Output signal of the NOT gate, which is the logical negation of the `in` signal.
+
+### Template: `CustomCircuit`
+
+- Inputs:
+  - `a`: Input signal for the custom circuit.
+  - `b`: Input signal for the custom circuit.
+- Outputs:
+  - `q`: Output signal of the custom circuit.
+
+## Getting Started
+
+To get started with the `CustomCircuit.circom` code, follow these steps:
+
+1. Clone this repository to your local machine using the following command:
+
+   ```bash
+   git clone <repository_url>
+   ```
+
+2. Change into the cloned directory:
+
+   ```bash
+   cd <repository_directory>
+   ```
+
+3. Review the `CustomCircuit.circom` file to understand the logic and behavior of the custom circuit. Make sure you have a basic understanding of the Circom language and the defined templates.
+
+## Compiling and Running the Circuit
+
+To compile and run the `CustomCircuit.circom` code, follow these steps:
+
+1. Open your terminal or command prompt.
+
+2. Navigate to the directory containing the `CustomCircuit.circom` file.
+
+3. Run the following command to compile the Circom code:
+
+   ```bash
+   circom CustomCircuit.circom -r
+   ```
+
+   This will generate two files:
+   - `circuit.json`: This file contains the compiled arithmetic representation of the circuit.
+   - `constraints.json`: This file contains the constraints for the circuit.
+
+4. To run the custom circuit with specific input values, uncomment the `INPUT` object at the end of the `CustomCircuit.circom` file and provide appropriate input values for `a` and `b`.
+
+5. Run the following command to execute the circuit with the provided inputs:
+
+   ```bash
+   snarkjs wtns calculate CustomCircuit.r1cs INPUT.json witness.wtns
+   ```
+
+   This command will generate a `witness.wtns` file, which is the witness for the circuit.
+
+6. To verify the result of the circuit, run the following command:
+
+   ```bash
+   snarkjs groth16 prove CustomCircuit.zkey witness.wtns proof.json public.json
+   ```
+
+   This will generate a `proof.json` file, which is the proof of the computation.
+
+7. To verify the proof, use the following command:
+
+   ```bash
+   snarkjs groth16 verify CustomCircuit.vkey proof.json public.json
+   ```
+
+   If the proof is valid, you will see a success message.
+
+# DEPLOY.ts
+
+This script (`NOW_DEPLOY.ts`) is designed to deploy a smart contract and perform zero-knowledge proof (zkSNARK) verification using the deployed contract. It uses Hardhat for smart contract deployment and the `snarkjs` library to generate and verify the zkSNARK proof. The script reads the necessary input data from the specified directories and files, generates the zkSNARK proof, deploys the smart contract, and verifies the proof on-chain.
+
+## Prerequisites
+
+Before running the `NOW_DEPLOY.ts` script, make sure you have the following installed on your system:
+
+1. **Node.js and npm**: The script uses Node.js and npm to execute the code. You can download Node.js from the official website: https://nodejs.org/
+
+2. **Hardhat**: The script utilizes Hardhat for smart contract deployment. To install Hardhat, use the following command:
+
+   ```bash
+   npm install -g hardhat
+   ```
+
+3. **snarkjs**: The script uses the `snarkjs` library for generating and verifying zkSNARK proofs. To install `snarkjs`, use the following command:
+
+   ```bash
+   npm install -g snarkjs
+   ```
+
+## File Structure
+
+Ensure that the following file structure is present for the script to work correctly:
 
 ```
-pragma circom 2.0.0;
-
-/*This circuit template checks that c is the multiplication of a and b.*/  
-
-template Multiplier2 () {  
-
-   // Declaration of signals.  
-   signal input a;  
-   signal input b;  
-   signal output c;  
-
-   // Constraints.  
-   c <== a * b;  
-}
-component main = Multiplier2();
-```
-### Install
-`npm i`
-
-### Compile
-`npx hardhat circom` 
-This will generate the **out** file with circuit intermediaries and geneate the **MultiplierVerifier.sol** contract
-
-### Prove and Deploy
-`npx hardhat run scripts/deploy.ts`
-This script does 4 things  
-1. Deploys the MultiplierVerifier.sol contract
-2. Generates a proof from circuit intermediaries with `generateProof()`
-3. Generates calldata with `generateCallData()`
-4. Calls `verifyProof()` on the verifier contract with calldata
-
-With two commands you can compile a ZKP, generate a proof, deploy a verifier, and verify the proof 🎉
-
-## Configuration
-### Directory Structure
-**circuits**
-```
-├── multiplier
-│   ├── circuit.circom
-│   ├── input.json
-│   └── out
-│       ├── circuit.wasm
-│       ├── multiplier.r1cs
-│       ├── multiplier.vkey
-│       └── multiplier.zkey
-├── new-circuit
-└── powersOfTau28_hez_final_12.ptau
-```
-Each new circuit lives in it's own directory. At the top level of each circuit directory lives the circom circuit and input to the circuit.
-The **out** directory will be autogenerated and store the compiled outputs, keys, and proofs. The Powers of Tau file comes from the Polygon Hermez ceremony, which saves time by not needing a new ceremony. 
-
-
-**contracts**
-```
-contracts
-└── MultiplierVerifier.sol
-```
-Verifier contracts are autogenerated and prefixed by the circuit name, in this example **Multiplier**
-
-## hardhat.config.ts
-```
-  circom: {
-    // (optional) Base path for input files, defaults to `./circuits/`
-    inputBasePath: "./circuits",
-    // (required) The final ptau file, relative to inputBasePath, from a Phase 1 ceremony
-    ptau: "powersOfTau28_hez_final_12.ptau",
-    // (required) Each object in this array refers to a separate circuit
-    circuits: JSON.parse(JSON.stringify(circuits))
-  },
-```
-### circuits.config.json
-circuits configuation is separated from hardhat.config.ts for **autogenerated** purposes (see next section)
-```
-[
-  {
-    "name": "multiplier",
-    "protocol": "groth16",
-    "circuit": "multiplier/circuit.circom",
-    "input": "multiplier/input.json",
-    "wasm": "multiplier/out/circuit.wasm",
-    "zkey": "multiplier/out/multiplier.zkey",
-    "vkey": "multiplier/out/multiplier.vkey",
-    "r1cs": "multiplier/out/multiplier.r1cs",
-    "beacon": "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
-  }
-]
+./circuits/CustomCircuit/
+    |- input.json
+    |- out/
+        |- circuit.wasm
+        |- circuit.wtns
+        |- CustomCircuit.zkey
 ```
 
-**adding circuits**   
-To add a new circuit, you can run the `newcircuit` hardhat task to autogenerate configuration and directories i.e  
-```
-npx hardhat newcircuit --name newcircuit
-```
+## Usage
 
-**determinism**
-> When you recompile the same circuit using the groth16 protocol, even with no changes, this plugin will apply a new final beacon, changing all the zkey output files. This also causes your Verifier contracts to be updated.
-> For development builds of groth16 circuits, we provide the --deterministic flag in order to use a NON-RANDOM and UNSECURE hardcoded entropy (0x000000 by default) which will allow you to more easily inspect and catch changes in your circuits. You can adjust this default beacon by setting the beacon property on a circuit's config in your hardhat.config.js file.
+1. Clone this repository to your local machine.
+
+2. Open a terminal or command prompt and navigate to the cloned repository's root directory.
+
+3. Make sure you have set up the file structure with the required files as described in the "File Structure" section above.
+
+4. Open the `NOW_DEPLOY.ts` file and make any necessary modifications to the paths, file names, and contract name as per your setup.
+
+5. Run the script using the following command:
+
+   ```bash
+   npx hardhat run NOW_DEPLOY.ts
+   ```
+
+   The script will execute the following steps:
+
+   - Deploy the `Verifier` contract using the provided factory.
+   - Generate the zkSNARK proof call data using the `generateCallData` function.
+   - Verify the generated zkSNARK proof on the deployed contract using the `verifyProof` function.
+   - Display the result of the proof verification.
+
+6. The script will output the address of the deployed `Verifier` contract and the result of the proof verification. If the result is `true`, it indicates that the proof was successfully verified on-chain.
+   
