@@ -1,4 +1,4 @@
-# CustomCircuit.circom Readme
+# CustomCircuit.circom
 
 ## Description
 
