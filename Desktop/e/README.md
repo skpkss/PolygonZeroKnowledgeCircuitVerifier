@@ -1,4 +1,4 @@
-# CustomCircuit.circom
+# ZK Snark Designer
 
 ## Description
 
