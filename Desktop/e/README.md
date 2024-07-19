@@ -4,6 +4,9 @@
 
 This repository contains the code for a custom circuit implemented in the Circom language. The `CustomCircuit.circom` code defines a custom logic circuit composed of AND, OR, and NOT gates. This readme provides information on how to understand, use, and run the circuit.
 
+## Project Walkthrough
+https://www.loom.com/share/43da351367394cdfab003b207230be80
+
 ## Prerequisites
 
 Before using the `CustomCircuit.circom` code, make sure you have the following installed on your system:
